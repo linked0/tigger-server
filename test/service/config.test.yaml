@@ -1,0 +1,74 @@
+server:
+    address: 127.0.0.1
+    port: 3000
+
+database:
+    host: "${DATABASE_HOST}"
+    user: "${DATABASE_USER}"
+    database: "${DATABASE_NAME}"
+    password: "${DATABASE_PASSWORD}"
+    port: "${DATABASE_PORT}"
+
+logging:
+    folder: /swap/logs/
+    level: debug
+
+bridge:
+    boa_ethnet_address: "0xeEdC2Ac65dF232AB6d229EBD4E3F564e194ffe7D"
+    bridge_ethnet_address: "0xab929174E887E5418C1E6dB1995CDCc23AE40c89"
+    bridge_biznet_address: "0x7f28F281d57AC7d99A8C2FAd2d37271c2c9c67D6"
+    ethnet_interval: 5
+    biznet_interval: 1
+    ethnet_network: "ethnet"
+    biznet_network: "biznet"
+    gas_usage_open_deposit: 200000
+    gas_usage_close_deposit: 70000
+    gas_usage_open_withdraw: 200000
+    gas_usage_close_withdraw: 100000
+    fee: 30
+    manager_key: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+    fee_address: "0x7F68D51ca06b7F31b563Cad621c801e9EA6Ec845"
+
+token_bridge:
+    bridge_ethnet_address: "0x4917760620Bd62aC9C6c3bfE474cBb5283ac786a"
+    bridge_biznet_address: "0x60Cd432370d6C6f1Ee953029320e0BC595686C26"
+    ethnet_interval: 14
+    biznet_interval: 14
+    ethnet_network: "ethnet"
+    biznet_network: "biznet"
+    gas_usage_open_deposit: 213968
+    gas_usage_close_deposit: 79238
+    gas_usage_open_withdraw: 197145
+    gas_usage_close_withdraw: 111016
+    manager_key: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+    token_addresses:
+        - ethnet: "0xa470F8F6c183960C1D9456bFcEA389ef94Ee971d"
+          biznet: "0xC6529c4492bb6667E13193ba0D3e3914321FA434"
+        - ethnet: "0xCaC6398E6DAed9742A297aDD4376bE1bA5904f08"
+          biznet: "0xcfB9F47b86dE685D2E112B01Fd69B7b26d84b8cA"
+
+scheduler:
+    enable: true
+    items:
+        - name: bridge
+          enable: true
+          interval: 1
+
+cgc_coin_price:
+    items:
+        - id: bosagora
+          symbol: BOA
+        - id: ethereum
+          symbol: ETH
+
+cmc_coin_price:
+    items:
+        - id: bosagora
+          symbol: BOA
+        - id: ethereum
+          symbol: ETH
+
+key_store:
+    items:
+        - name: manager
+          file: test_manager.key

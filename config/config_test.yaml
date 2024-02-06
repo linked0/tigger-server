@@ -1,0 +1,96 @@
+################################################################################
+##                             Network interface                              ##
+################################################################################
+server:
+    # Address to which we bind (default: 127.0.0.1)
+    address: "0.0.0.0"
+    # Port on which we bind (default: 3000)
+    port: 3001
+
+################################################################################
+##                               Database options                             ##
+################################################################################
+database:
+    host: "${DATABASE_HOST}"
+    user: "${DATABASE_USER}"
+    database: "${DATABASE_NAME}"
+    password: "${DATABASE_PASSWORD}"
+    port: "${DATABASE_PORT}"
+    waitForConnections: true
+    connectionLimit: 30
+    queueLimit: 0
+
+################################################################################
+##                               Logging options                              ##
+################################################################################
+logging:
+    # The name of the folder where the logs are stored.
+    folder: logs/
+    # Values: error, warn, info, http, verbose, debug, silly
+    level: http
+    # Default to false
+    console: true
+
+bridge:
+    boa_ethnet_address: "${BOA_ETHNET_CONTRACT_ADDRESS}"
+    bridge_ethnet_address: "${BRIDGE_ETHNET_CONTRACT_ADDRESS}"
+    bridge_biznet_address: "${BRIDGE_BIZNET_CONTRACT_ADDRESS}"
+    ethnet_interval: 1
+    biznet_interval: 1
+    ethnet_network: "hardhat"
+    biznet_network: "hardhat"
+    gas_usage_open_deposit: 213968
+    gas_usage_close_deposit: 79238
+    gas_usage_open_withdraw: 197145
+    gas_usage_close_withdraw: 111016
+    fee: 30
+    manager_key: "${MANAGER_KEY}"
+    fee_address: "${FEE_MANAGER_ADDRESS}"
+
+token_bridge:
+    bridge_ethnet_address: "${TOKEN_BRIDGE_ETHNET_CONTRACT_ADDRESS}"
+    bridge_biznet_address: "${TOKEN_BRIDGE_BIZNET_CONTRACT_ADDRESS}"
+    ethnet_interval: 1
+    biznet_interval: 1
+    ethnet_network: "hardhat"
+    biznet_network: "hardhat"
+    gas_usage_open_deposit: 213968
+    gas_usage_close_deposit: 79238
+    gas_usage_open_withdraw: 197145
+    gas_usage_close_withdraw: 111016
+    manager_key: "${MANAGER_KEY}"
+    token_addresses:
+      - ethnet: "${TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS1}"
+        biznet: "${TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS1}"
+      - ethnet: "${TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS2}"
+        biznet: "${TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS2}"
+
+scheduler:
+    enable: true
+    items:
+        - name: bridge
+          enable: true
+          interval: 1
+        - name: cmc_coin_price
+          enable: true
+          interval: 30
+        - name: cgc_coin_price
+          enable: true
+          interval: 30
+        - name: eth_gas_price
+          enable: true
+          interval: 30
+
+cgc_coin_price:
+    items:
+        - id: bosagora
+          symbol: BOA
+        - id: ethereum
+          symbol: ETH
+
+cmc_coin_price:
+    items:
+        - id: bosagora
+          symbol: BOA
+        - id: ethereum
+          symbol: ETH

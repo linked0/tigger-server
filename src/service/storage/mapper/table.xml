@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="table">
+
+    <sql id="bridge_swaps">
+        CREATE TABLE IF NOT EXISTS bridge_swaps
+        (
+            id                      VARCHAR(66) NOT NULL,
+            type                    INT         NOT NULL,
+            trader_address          VARCHAR(42) NOT NULL,
+            withdraw_address        VARCHAR(42) NOT NULL,
+            amount                  DECIMAL(65, 0) NOT NULL,
+            swap_fee                DECIMAL(65, 0) NOT NULL,
+            tx_fee                  DECIMAL(65, 0) NOT NULL,
+            direction               INT         NOT NULL,
+            secret_lock             VARCHAR(66) NOT NULL,
+            secret_key              VARCHAR(66) DEFAULT '',
+            deposit_state           INT DEFAULT 0,
+            deposit_token_id        VARCHAR(66) DEFAULT '',
+            deposit_time_lock       INT DEFAULT 0,
+            deposit_create_time     INT DEFAULT 0,
+            deposit_tx_hash         VARCHAR(66) DEFAULT '',
+            withdraw_state          INT DEFAULT 0,
+            withdraw_token_id       VARCHAR(66) DEFAULT '',
+            withdraw_time_lock      INT DEFAULT 0,
+            withdraw_create_time    INT DEFAULT 0,
+            withdraw_tx_hash        VARCHAR(66) DEFAULT '',
+            withdraw_time_diff      INT DEFAULT 0,
+            process_status          INT DEFAULT 0,
+            process_update_time     INT DEFAULT 0,
+            updated_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    </sql>
+
+    <sql id="bridge_vm_error">
+        CREATE TABLE IF NOT EXISTS bridge_vm_error
+        (
+            id                      VARCHAR(66) NOT NULL,
+            task                    VARCHAR(64) DEFAULT 'N',
+            code                    VARCHAR(32) DEFAULT 0,
+            message                 VARCHAR(256) DEFAULT NULL,
+            is_retry                VARCHAR(1) DEFAULT 'N',
+            num_retry               INT DEFAULT 0,
+            next_try_time           INT DEFAULT 0,
+            PRIMARY KEY (id, task)
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    </sql>
+
+    <sql id="coin_price">
+        CREATE TABLE IF NOT EXISTS coin_price
+        (
+            source          VARCHAR(3)     NOT NULL,
+            symbol          VARCHAR(6)     NOT NULL,
+            usd             DECIMAL(16, 7) NOT NULL,
+            krw             DECIMAL(16, 7) NOT NULL,
+            last_updated_at INT            NOT NULL,
+            PRIMARY KEY (source, symbol)
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    </sql>
+    
+    <sql id="gas_price">
+      CREATE TABLE IF NOT EXISTS gas_price
+        (
+          symbol          VARCHAR(6) NOT NULL,
+          fast            INT        NOT NULL,
+          low             INT        NOT NULL,
+          average         INT        NOT NULL,
+          last_updated_at INT        NOT NULL,
+          PRIMARY KEY (symbol)
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    </sql>
+
+    <sql id="bridge_index">
+        set @x := (select count(*) from information_schema.statistics where table_name = 'bridge_swaps' and index_name = 'bridge_boxes_address' and table_schema = database());
+            set @sql := if( @x > 0, 'select ''Index exists.''', 'CREATE INDEX bridge_boxes_address on bridge_swaps (trader_address);');
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+
+        set @x := (select count(*) from information_schema.statistics where table_name = 'bridge_swaps' and index_name = 'bridge_boxes_state' and table_schema = database());
+            set @sql := if( @x > 0, 'select ''Index exists.''', 'CREATE INDEX bridge_boxes_state on bridge_swaps (deposit_state, withdraw_state);');
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+
+        set @x := (select count(*) from information_schema.statistics where table_name = 'bridge_swaps' and index_name = 'bridge_boxes_direction' and table_schema = database());
+            set @sql := if( @x > 0, 'select ''Index exists.''', 'CREATE INDEX bridge_boxes_direction on bridge_swaps (direction);');
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+    </sql>
+
+    <select id="create_table">
+        <include refid="bridge_swaps"/>
+        <include refid="bridge_vm_error"/>
+        <include refid="coin_price"/>
+        <include refid="gas_price"/>
+
+        <include refid="bridge_index"/>
+    </select>
+    
+    <select id="drop_table">
+        DROP DATABASE ${database}
+    </select>
+    
+</mapper>

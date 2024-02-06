@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etc">
+    <update id="updateCoinPrice" parameterType="list">
+        REPLACE INTO coin_price
+            (
+                source, symbol, usd, krw, last_updated_at
+            )
+        VALUES
+        <foreach collection="prices" item="item" index="index" separator=",">
+            (
+                #{item.source},
+                #{item.symbol},
+                ${item.usd},
+                ${item.krw},
+                ${item.last_updated_at}
+            )
+        </foreach>;
+    </update>
+
+    <select id="getLastBOAPrices">
+        select
+            source,
+            usd,
+            krw,
+            symbol,
+            last_updated_at
+        from
+            coin_price
+        where symbol = 'BOA'
+        order by last_updated_at desc limit 1
+    </select>
+
+    <select id="getCoinPrices">
+        SELECT
+            T.symbol,
+            (
+                SELECT source FROM coin_price AS A WHERE A.symbol = T.symbol ORDER BY A.last_updated_at DESC LIMIT 1
+            ) AS source,
+            (
+                SELECT usd FROM coin_price AS A WHERE A.symbol = T.symbol ORDER BY A.last_updated_at DESC LIMIT 1
+            ) AS usd,
+            (
+                SELECT krw FROM coin_price AS A WHERE A.symbol = T.symbol ORDER BY A.last_updated_at DESC LIMIT 1
+            ) AS krw,
+            (
+                SELECT last_updated_at FROM coin_price AS A WHERE A.symbol = T.symbol ORDER BY A.last_updated_at DESC LIMIT 1
+            ) AS last_updated_at
+        from
+            (
+                SELECT DISTINCT symbol FROM coin_price
+            ) AS T
+    </select>
+
+    <update id="updateGasPrice">
+        REPLACE INTO gas_price
+            (symbol, fast, low, average, last_updated_at)
+        VALUES
+            (
+                #{symbol},
+                ${fast},
+                ${low},
+                ${average},
+                ${last_updated_at}
+            )
+    </update>
+
+    <select id="getGasPrice">
+        SELECT * FROM gas_price
+    </select>
+
+</mapper>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bridge">
+
+    <insert id="postBridgeSwap">
+        INSERT
+            IGNORE INTO bridge_swaps
+            (
+                id,
+                type,
+                trader_address,
+                withdraw_address,
+                amount,
+                swap_fee,
+                tx_fee,
+                direction,
+                secret_lock,
+                deposit_tx_hash
+            )
+        VALUES
+            (
+                #{id},
+                #{type},
+                #{trader_address},
+                #{withdraw_address},
+                #{amount},
+                #{swap_fee},
+                #{tx_fee},
+                ${direction},
+                #{secret_lock},
+                #{deposit_tx_hash}
+            )
+    </insert>
+
+    <insert id="postBridgeSwapForSampleData">
+        INSERT
+            IGNORE INTO bridge_swaps
+        (
+            id,
+            type,
+            trader_address,
+            withdraw_address,
+            amount,
+            swap_fee,
+            tx_fee,
+            direction,
+            secret_lock,
+            deposit_state,
+            deposit_time_lock,
+            deposit_create_time,
+            withdraw_state,
+            withdraw_time_lock,
+            withdraw_create_time,
+            process_status
+        )
+        VALUES (
+                   #{id},
+                   #{type},
+                   #{trader_address},
+                   #{withdraw_address},
+                   #{amount},
+                   #{swap_fee},
+                   #{tx_fee},
+                   ${direction},
+                   #{secret_lock},
+                   ${deposit_state},
+                   ${deposit_time_lock},
+                   ${deposit_create_time},
+                   ${withdraw_state},
+                   ${withdraw_time_lock},
+                   ${withdraw_create_time},
+                   ${process_status}
+               )
+    </insert>
+
+    <select id="getBridgeSwap">
+        SELECT
+            swaps.id,
+            swaps.type,
+            swaps.trader_address,
+            swaps.withdraw_address,
+            CAST(swaps.amount AS CHAR) AS amount,
+            CAST(swaps.swap_fee AS CHAR) AS swap_fee,
+            CAST(swaps.tx_fee AS CHAR) AS tx_fee,
+            swaps.direction,
+            swaps.secret_lock,
+            swaps.deposit_state,
+            swaps.deposit_token_id,
+            swaps.deposit_time_lock,
+            swaps.deposit_create_time,
+            swaps.deposit_tx_hash,
+            swaps.withdraw_state,
+            swaps.withdraw_token_id,
+            swaps.withdraw_time_lock,
+            swaps.withdraw_create_time,
+            swaps.withdraw_time_diff,
+            swaps.withdraw_tx_hash,
+            swaps.process_status
+        FROM
+            bridge_swaps AS swaps
+        WHERE swaps.id =  #{id}
+    </select>
+
+    <select id="getBridgeSwapList">
+        SELECT
+            COUNT(*) OVER() AS full_count,
+            swaps.id,
+            swaps.type,
+            swaps.withdraw_address,
+            CAST(swaps.amount AS CHAR) AS amount,
+            CAST(swaps.swap_fee AS CHAR) AS swap_fee,
+            CAST(swaps.tx_fee AS CHAR) AS tx_fee,
+            swaps.direction,
+            swaps.secret_lock,
+            swaps.deposit_state,
+            swaps.deposit_token_id,
+            swaps.deposit_time_lock,
+            swaps.deposit_create_time,
+            swaps.deposit_tx_hash,
+            swaps.withdraw_state,
+            swaps.withdraw_token_id,
+            swaps.withdraw_time_lock,
+            swaps.withdraw_create_time,
+            swaps.withdraw_tx_hash,
+            swaps.process_status
+        FROM
+            bridge_swaps AS swaps
+        WHERE
+            swaps.trader_address = #{trade_address}
+        ORDER BY id DESC
+        LIMIT ${page_size} OFFSET ${offset};
+    </select>
+
+    <select id="getBridgeWaitingSwap">
+        SELECT
+            swaps.id,
+            swaps.type,
+            swaps.trader_address,
+            swaps.withdraw_address,
+            CAST(swaps.amount AS CHAR) AS amount,
+            CAST(swaps.swap_fee AS CHAR) AS swap_fee,
+            CAST(swaps.tx_fee AS CHAR) AS tx_fee,
+            swaps.direction,
+            swaps.secret_lock,
+            swaps.secret_key,
+            swaps.deposit_state,
+            swaps.deposit_token_id,
+            swaps.deposit_time_lock,
+            swaps.deposit_create_time,
+            swaps.deposit_tx_hash,
+            swaps.withdraw_state,
+            swaps.withdraw_token_id,
+            swaps.withdraw_time_lock,
+            swaps.withdraw_create_time,
+            swaps.withdraw_tx_hash,
+            swaps.withdraw_time_diff,
+            swaps.process_status,
+            swaps.process_update_time
+        FROM bridge_swaps AS swaps
+        WHERE
+          swaps.process_status &lt; 99
+          AND (
+                swaps.deposit_state IN (0, 1)
+                OR swaps.withdraw_state IN (0, 1)
+            )
+    </select>
+
+    <update id="updateBridgeDeposit">
+        UPDATE bridge_swaps
+        SET trader_address      = #{trader_address},
+            withdraw_address    = #{withdraw_address},
+            amount              = #{amount},
+            swap_fee            = #{swap_fee},
+            tx_fee              = #{tx_fee},
+            secret_lock         = #{secret_lock},
+            deposit_state       = ${deposit_state},
+            deposit_token_id    = #{deposit_token_id},
+            deposit_time_lock   = ${deposit_time_lock},
+            deposit_create_time = ${deposit_create_time},
+            process_status      = ${process_status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBridgeWithdraw">
+        UPDATE bridge_swaps
+        SET withdraw_state       = ${withdraw_state},
+            withdraw_token_id    = #{withdraw_token_id},
+            withdraw_time_lock   = ${withdraw_time_lock},
+            withdraw_create_time = ${withdraw_create_time},
+            process_status       = ${process_status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBridgeWithdrawTimeDiff">
+        UPDATE bridge_swaps
+        SET withdraw_time_diff = ${withdraw_time_diff}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBridgeWithdrawTxHash">
+        UPDATE bridge_swaps
+        SET withdraw_tx_hash = #{withdraw_tx_hash}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateBridgeProcessStatus">
+        UPDATE bridge_swaps
+        SET process_status      = ${process_status}
+        WHERE id =#{id}
+    </update>
+
+    <update id="updateBridgeProcessTime">
+        UPDATE bridge_swaps
+        SET process_update_time = ${process_update_time}
+        WHERE id =#{id}
+    </update>
+
+    <select id="getBridgeVMError">
+        SELECT *
+        FROM bridge_vm_error
+        WHERE
+            id = #{id}
+          AND task = #{task}
+    </select>
+
+    <update id="updateBridgeVMError">
+        REPLACE INTO bridge_vm_error
+            (id, task, code, message, is_retry, next_try_time, num_retry)
+        VALUES
+            (#{id}, #{task}, #{code}, #{message}, #{is_retry}, ${next_try_time}, ${num_retry})
+    </update>
+
+    <update id="clearBridgeVMError">
+        DELETE FROM
+            bridge_vm_error
+        WHERE id = #{id} AND task = #{task}
+    </update>
+
+    <update id="updateBridgeSecretKey">
+        UPDATE bridge_swaps
+        SET
+            secret_key = #{secret_key}
+        WHERE id = #{id}
+    </update>
+</mapper>
