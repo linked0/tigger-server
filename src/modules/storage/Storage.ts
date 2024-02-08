@@ -38,7 +38,7 @@ export class Storage {
             connectionLimit: Number(databaseConfig.connectionLimit),
             queueLimit: Number(databaseConfig.queueLimit),
         };
-        console.log("@@@ Storage -> constructor -> dbconfig", dbconfig);
+        // console.log("@@@ Storage -> constructor -> dbconfig", dbconfig);
         this.pool = mysql.createPool(dbconfig);
 
         this.query(`CREATE DATABASE IF NOT EXISTS \`${databaseConfig.database}\`;`, [])

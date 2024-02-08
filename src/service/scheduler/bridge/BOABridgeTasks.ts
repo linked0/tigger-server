@@ -64,7 +64,7 @@ export class BOABridgeTasks extends BridgeTasks {
         const gas_price = await this.storage.getStandardGasPrice();
         const eth_boa_rate = await this.storage.getEthBoaRate();
         if (gas_price === null) {
-            logger.error("This task will be put on hold because the Ethereum gas price is unknown.", {
+            logger.error("@@@ This task will be put on hold because the Ethereum gas price is unknown.", {
                 id: swap.id,
                 status: swap.process_status,
             });
@@ -72,7 +72,7 @@ export class BOABridgeTasks extends BridgeTasks {
         }
 
         if (eth_boa_rate === null) {
-            logger.error("This task will be put on hold because the ETH & BOA price is unknown.", {
+            logger.error("$$$ This task will be put on hold because the ETH & BOA price is unknown.", {
                 id: swap.id,
                 status: swap.process_status,
             });

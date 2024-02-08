@@ -34,7 +34,7 @@ import {
 export class SwapStorage extends Storage {
     constructor(databaseConfig: IDatabaseConfig, callback: (err: Error | null) => void) {
         super(databaseConfig, callback);
-        console.log("@@@ SwapStorage -> constructor -> databaseConfig", databaseConfig);
+        // console.log("@@@ SwapStorage -> constructor -> databaseConfig", databaseConfig);
         MybatisMapper.createMapper([
             path.resolve(Utils.getInitCWD(), "src/service/storage/mapper/table.xml"),
             path.resolve(Utils.getInitCWD(), "src/service/storage/mapper/bridge.xml"),
@@ -47,7 +47,7 @@ export class SwapStorage extends Storage {
      * @param databaseConfig
      */
     public static make(databaseConfig: IDatabaseConfig): Promise<SwapStorage> {
-        console.log("@@@ SwapStorage -> make -> databaseConfig", databaseConfig);
+        // console.log("@@@ SwapStorage -> make -> databaseConfig", databaseConfig);
         return new Promise<SwapStorage>((resolve, reject) => {
             const result = new SwapStorage(databaseConfig, (err: Error | null) => {
                 if (err) reject(err);

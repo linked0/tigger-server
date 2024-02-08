@@ -118,9 +118,9 @@ const config: HardhatUserConfig = {
             chainId: 2151,
             accounts: getAccounts(),
         },
-        biznet_test_net: {
+        test: {
             url: process.env.BIZNET_TEST_NET_URL || "",
-            chainId: 2019,
+            chainId: 12301,
             accounts: getAccounts(),
         },
         ethnet_main_net: {
@@ -139,13 +139,13 @@ const config: HardhatUserConfig = {
             accounts: getAccounts(),
         },
         ethnet_sample: {
-            url: process.env.ETHNET_SAMPLE_URL || "",
-            chainId: 51029,
+            url: process.env.SEPOLIA_URL || "",
+            chainId: 11155111,
             accounts: getAccounts(),
         },
         biznet_sample: {
-            url: process.env.BIZNET_SAMPLE_URL || "",
-            chainId: 51030,
+            url: process.env.BIZNET_TEST_NET_URL || "",
+            chainId: 12301,
             accounts: getAccounts(),
         },
     },
