@@ -72,6 +72,7 @@ export class BOABridgeContractManager extends BridgeContractManager {
             );
             // region ETHNET
             hre.changeNetwork(this.config.bridge.ethnet_network);
+            console.log("hardhat.network.url:", hre.network.config.url);
             this.provider_ethnet = hre.ethers.provider as providers.Web3Provider;
             const manager_signer_ethnet = ContractUtils.getManagerSigner(
                 this.config.bridge.ethnet_network,
@@ -105,6 +106,7 @@ export class BOABridgeContractManager extends BridgeContractManager {
             // endregion
 
             // region BIZNET
+            console.log("this.config.bridge.biznet_network:", this.config.bridge.biznet_network);
             hre.changeNetwork(this.config.bridge.biznet_network);
             this.provider_biznet = hre.ethers.provider as providers.Web3Provider;
 
@@ -133,9 +135,22 @@ export class BOABridgeContractManager extends BridgeContractManager {
             ) as BOACoinBridge;
             // endregion
 
-            logger.info("Ethnet BOA deployed to: " + this.boa_ethnet.address);
-            logger.info("Ethnet BOABridge deployed to: " + this.bridge_ethnet.address);
-            logger.info("Biznet BOABridge deployed to: " + this.bridge_biznet.address);
+            console.log("Ethnet BOA deployed to: " + this.boa_ethnet.address);
+            console.log("Ethnet BOABridge deployed to: " + this.bridge_ethnet.address);
+            console.log("Biznet BOABridge deployed to: " + this.bridge_biznet.address);
+
+            // wait the previous code to complete
+            console.log("$$$$ call detectNetwork()");
+            this.provider_biznet.detectNetwork().then((network) => {
+                console.log("$$$$ provider_biznet.detectNetwork():", network);
+            });
+
+            const address: string = String("0xC64edC529C17D593f5339E02C9055312cE0718B7");
+            console.log("$$$ balance_ethnet - this.provider_ethnet:", this.provider_ethnet);
+            this.boa_ethnet.balanceOf(address).then((balance) => {
+                console.log("$$$ balance_ethnet:", balance);
+            });
+
         } catch (error) {
             logger.error(`Failed to create bridge contracts: ${error}`);
             process.exit(1);

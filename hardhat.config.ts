@@ -144,7 +144,7 @@ const config: HardhatUserConfig = {
             accounts: getAccounts(),
         },
         biznet_sample: {
-            url: process.env.BIZNET_TEST_NET_URL || "",
+            url: process.env.BIZNET_TEST_NET_URL || "http://3.37.37.195:8545",
             chainId: 12301,
             accounts: getAccounts(),
         },

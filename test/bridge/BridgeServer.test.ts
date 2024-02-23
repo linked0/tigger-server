@@ -51,7 +51,7 @@ describe("Test of Bridge Server", function () {
         await config.decrypt();
         await HardhatUtils.deployBOABridgeForTest(config);
         await HardhatUtils.deployTokenBridgeForTest(config);
-        serverURL = new URL(`http://127.0.0.1:${config.server.port}`);
+        serverURL = new URL(`http://localhost:${config.server.port}`);
         swap_storage = await SwapStorage.make(config.database);
         swap_server = new TestSwapServer(config, swap_storage, [
             new CGCCoinPriceScheduler(10),
@@ -61,6 +61,7 @@ describe("Test of Bridge Server", function () {
     });
 
     before("Start TestSwapServer", async () => {
+        console.log("@@@ start TestSwapServer @@@");
         await swap_server.start();
     });
 
@@ -71,6 +72,7 @@ describe("Test of Bridge Server", function () {
 
     before("Load contracts for test", () => {
         contract_manager = swap_server.bridge_contract_manager;
+        console.log("@@@ end of Load contracts for test @@@");
     });
 
     function checker(box_id: string, expected: any, timeout: number = 600, interval: number = 200): Promise<void> {
@@ -105,6 +107,7 @@ describe("Test of Bridge Server", function () {
     }
 
     context("Swap from Ethnet to Biznet", () => {
+        console.log("@@@ Swap from Ethnet to Biznet");
         let secret_lock: string;
         let secret_key: string;
         let box_id: string;
@@ -117,20 +120,32 @@ describe("Test of Bridge Server", function () {
         let tx_fee: Amount;
         let gas_price: number;
         let eth_boa_rate: number;
+        console.log("@@@ end of Swap from Ethnet to Biznet");
 
         before("Create Signer of User", () => {
+            console.log("@@@ Create Signer of User");
             user_signer = new NonceManager(
                 new GasPriceManager(contract_manager.provider_ethnet.getSigner(user.address))
             );
+            console.log("@@@ end of Create Signer of User");
         });
 
+        function delay(milliseconds: number): Promise<void> {
+            return new Promise(resolve => setTimeout(resolve, milliseconds));
+          }
+
         it("Test of the path /bridge/balance", async () => {
+            console.log("@@@ Test of the path /bridge/balance");
+            // await delay(2000); // Delay for 2000 milliseconds (2 seconds)
             const uri = URI(serverURL).directory("bridge/balance").filename(user.address);
 
             const url = uri.toString();
+            console.log("@@@ Test of the path /bridge/balance 2:", url);
             const response = await client.get(url);
+            console.log("@@@ Test of the path /bridge/balance 3");
             balance_ethnet = BigNumber.from(response.data.data.ethnet);
             balance_biznet = BigNumber.from(response.data.data.biznet);
+            console.log("@@@ end of Test of the path /bridge/balance");
         });
 
         it("Create secret key", () => {

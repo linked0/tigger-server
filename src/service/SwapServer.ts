@@ -95,6 +95,7 @@ export class SwapServer extends WebService {
      * Setup and start the server
      */
     public async start(): Promise<void> {
+        console.log("@@@ Start SwapServer");
         await this.token_bridge_contract_manager.buildTokenInfo();
         // parse application/x-www-form-urlencoded
         this.app.use(bodyParser.urlencoded({ extended: false, limit: "1mb" }));
@@ -105,6 +106,7 @@ export class SwapServer extends WebService {
         this.bridge_router.registerRoutes();
 
         this.schedules.forEach((m) => m.start());
+        console.log("@@@ end of Start SwapServer");
 
         return super.start();
     }

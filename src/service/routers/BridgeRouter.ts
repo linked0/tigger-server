@@ -173,8 +173,20 @@ export class BridgeRouter {
         const address: string = String(req.params.address);
         logger.http(`GET /balance/:address`);
 
-        const balance_biznet = await this._contract_manager.provider_biznet.getBalance(address);
+        console.log("### ethnet getBalance(address) - provider_ethnet:", this._contract_manager.provider_ethnet);
+        console.log("### biznet getBalance(address) - provider_biznet:", this._contract_manager.provider_biznet);
+
+        console.log("#### ethnet boa getBalance(address)");
         const balance_ethnet = await this._contract_manager.boa_ethnet.balanceOf(address);
+        console.log("#### endof ethnet boa getBalance(address)");
+        
+        console.log("#### poo getBalance(address)");
+        const balance_biznet = await this._contract_manager.provider_biznet.getBalance(address);
+        console.log("#### poo getBalance(address)");
+
+        console.log("#### ethnet getBalance");
+        const balance_eth = await this._contract_manager.provider_ethnet.getBalance(address);
+        console.log("#### end of ethnet getBalance", balance_eth);
 
         return res.json(
             BridgeRouter.makeResponseData(200, {

@@ -44,7 +44,7 @@ bridge:
     gas_usage_open_withdraw: 197145
     gas_usage_close_withdraw: 111016
     fee: 30
-    manager_key: "${MANAGER_KEY}"
+    manager_key: "${BRIDGE_MANAGER_KEY}"
     fee_address: "${FEE_MANAGER_ADDRESS}"
 
 token_bridge:
@@ -58,7 +58,7 @@ token_bridge:
     gas_usage_close_deposit: 79238
     gas_usage_open_withdraw: 197145
     gas_usage_close_withdraw: 111016
-    manager_key: "${MANAGER_KEY}"
+    manager_key: "${BRIDGE_MANAGER_KEY}"
     token_addresses:
       - ethnet: "${TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS1}"
         biznet: "${TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS1}"
