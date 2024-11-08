@@ -6,4 +6,3 @@ cp -r ./poo-ethnet/contracts contracts/boa-ethnet
 cp -r ./tigger-bridge/contracts/bridge contracts/bridge
 mkdir contracts/openzeppelin-solidity
 mkdir contracts/openzeppelin-solidity/contracts
-# cp -r submodules/openzeppelin-solidity/contracts contracts/openzeppelin-solidity

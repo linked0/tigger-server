@@ -11,7 +11,7 @@ $ cd bizboa-bridge-server
 $ git submodule update --init
 $ ./copy_contracts.sh
 $ npm install
-$ cp env/.env.sample env/.env
+$ cp .env.sample .env
 $ npx hardhat compile
 $ npx hardhat test
 ```
