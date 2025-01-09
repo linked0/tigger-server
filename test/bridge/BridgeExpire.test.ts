@@ -30,7 +30,7 @@ const URI = require("urijs");
 
 chai.use(solidity);
 
-describe("Test of Bridge Expire", function () {
+describe("Test of Bridge Server", function () {
     this.timeout(1000 * 60 * 5);
     const user = new Wallet(process.env.USER_KEY || "");
 

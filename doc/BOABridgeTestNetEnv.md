@@ -75,8 +75,8 @@ npx hardhat run scripts/boa/biznet/deploy_bridge.ts --network biznet_sample
 아래 명령어를 실행하면 각 계좌에 BOA가 전송됩니다.
 
 ```shell
-npx hardhat run scripts/boa/ethnet/transfer.ts --network ethnet_sample
-npx hardhat run scripts/boa/biznet/transfer.ts --network biznet_sample
+npx hardhat run scripts/boa/ethnet/transfer.ts --network marigold
+npx hardhat run scripts/boa/biznet/transfer.ts --network biznet_dev_net
 ```
 
 ## 유동성 공급하기
@@ -86,7 +86,7 @@ npx hardhat run scripts/boa/biznet/transfer.ts --network biznet_sample
 아래 명령어를 실행하면 EthNet의 브리지에 유동성이 공급됩니다.
 
 ```shell
-npx hardhat run scripts/boa/ethnet/add_liquidity.ts --network ethnet_sample
+npx hardhat run scripts/boa/ethnet/add_liquidity.ts --network marigold
 ```
 
 ### BizNet에 Bridge에 유동성 공급하기
@@ -94,7 +94,7 @@ npx hardhat run scripts/boa/ethnet/add_liquidity.ts --network ethnet_sample
 아래 명령어를 실행하면 BizNet의 브리지에 유동성이 공급됩니다.
 
 ```shell
-npx hardhat run scripts/boa/biznet/add_liquidity.ts --network biznet_sample
+npx hardhat run scripts/boa/biznet/add_liquidity.ts --network biznet_dev_net
 ```
 
 ## 관리자 설정하기
@@ -102,13 +102,13 @@ npx hardhat run scripts/boa/biznet/add_liquidity.ts --network biznet_sample
 ### EthNet 의 Bridge 에 관리자 지정
 
 ```shell
-npx hardhat run scripts/boa/ethnet/add_manager.ts --network ethnet_sample
+npx hardhat run scripts/boa/ethnet/add_manager.ts --network marigold
 ```
 
 ### BizNet 의 Bridge 에 관리자 지정
 
 ```shell
-npx hardhat run scripts/boa/biznet/add_manager.ts --network biznet_sample
+npx hardhat run scripts/boa/biznet/add_manager.ts --network biznet_dev_net
 ```
 
 ## 환경파일 수정

@@ -100,7 +100,7 @@ export class CMCCoinPriceScheduler extends Scheduler {
                 if (++this._loop >= 1000) this._loop = 0;
             }
         } catch (error) {
-            logger.error("An exception occurred during execution - " + error);
+            logger.error("CMCCoinPrice: An exception occurred during execution - " + error);
         }
 
         this._old_time_stamp = this._new_time_stamp;

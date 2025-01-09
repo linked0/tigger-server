@@ -1,6 +1,3 @@
-[submodule "poo-ethnet"]
-	path = poo-ethnet
-	url = https://github.com/linked0/pooh-erc20
 [submodule "tigger-bridge"]
 	path = tigger-bridge
 	url = https://github.com/linked0/tigger-bridge-contracts

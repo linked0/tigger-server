@@ -108,6 +108,8 @@ export class BOABridgeTasks extends BridgeTasks {
         if (!result || !result.deposit_box) return;
         const deposit_box: IBridgeLockBoxInfo = result.deposit_box;
 
+        console.log("### getBridgeDepositLockBoxInfo:", result);
+
         const decimal = swap.direction === BridgeDirection.ETHNET_BIZNET ? BOAToken.DECIMAL : BOACoin.DECIMAL;
 
         if (deposit_box.state === BridgeLockBoxStates.OPEN) {
@@ -314,14 +316,16 @@ export class BOABridgeTasks extends BridgeTasks {
             source_amount = new BOAToken(BigNumber.from(swap.amount));
             source_swap_fee = new BOAToken(BigNumber.from(swap.swap_fee));
             source_tx_fee = new BOAToken(BigNumber.from(swap.tx_fee));
-            target_amount = source_amount.convert(BOACoin.DECIMAL);
+            // target_amount = source_amount.convert(BOACoin.DECIMAL);
+            target_amount = source_amount;
             target_swap_fee = source_swap_fee.convert(BOACoin.DECIMAL);
             target_tx_fee = source_tx_fee.convert(BOACoin.DECIMAL);
         } else {
             source_amount = new BOACoin(BigNumber.from(swap.amount));
             source_swap_fee = new BOACoin(BigNumber.from(swap.swap_fee));
             source_tx_fee = new BOACoin(BigNumber.from(swap.tx_fee));
-            target_amount = source_amount.convert(BOAToken.DECIMAL);
+            // target_amount = source_amount.convert(BOAToken.DECIMAL);
+            target_amount = source_amount;
             target_swap_fee = source_swap_fee.convert(BOAToken.DECIMAL);
             target_tx_fee = source_tx_fee.convert(BOAToken.DECIMAL);
         }
@@ -329,6 +333,15 @@ export class BOABridgeTasks extends BridgeTasks {
         // 박스가 존재하지 않을 때 생성한다.
         if (withdraw_box.state === BridgeLockBoxStates.INVALID) {
             const task2 = async () => {
+                console.log(
+                    "### openWithdraw:",
+                    target_bridge.address,
+                    swap.id,
+                    "source_amount:",
+                    source_amount.value,
+                    "target_amount:",
+                    target_amount.value
+                );
                 try {
                     await target_bridge.openWithdraw(
                         swap.id,
@@ -342,7 +355,7 @@ export class BOABridgeTasks extends BridgeTasks {
                 } catch (error) {
                     await this.contract_manager.resetTargetTransactionCount(swap.direction);
                     const vm_error = ContractUtils.getVMError(error);
-                    logger.error("Failed to open withdraw lock box", {
+                    logger.error("Failed to open withdraw lock box - 2", {
                         id: swap.id,
                         status: swap.process_status,
                         vm_message: vm_error.message,
@@ -474,6 +487,14 @@ export class BOABridgeTasks extends BridgeTasks {
 
             if (!result || !result.withdraw_box) return;
             const withdraw_box: IBridgeLockBoxInfo = result.withdraw_box;
+            console.log(
+                "### getBridgeWithdrawLockBoxInfo:",
+                swap.id,
+                "target_bridge:",
+                target_bridge.address,
+                "withdraw_box:",
+                withdraw_box
+            );
 
             if (withdraw_box.state === BridgeLockBoxStates.CLOSED) {
                 await this.storage.updateBridgeWithdraw(
@@ -516,6 +537,7 @@ export class BOABridgeTasks extends BridgeTasks {
                 });
                 return { vm_error };
             }
+            console.log("### closeWithdraw Success:", swap.id);
             return {
                 tx_hash: tx.hash,
             };

@@ -23,7 +23,7 @@ async function main() {
     const manager = new Wallet(config.bridge.manager_key);
     const user = new Wallet(process.env.USER_KEY || "");
     const token_ethnet_Artifact = JSON.parse(
-        fs.readFileSync("./artifacts/contracts/boa-ethnet/PoohToken.sol/PoohToken.json", "utf8")
+        fs.readFileSync("./artifacts/contracts/boa-ethnet/BOSAGORA.sol/BOSAGORA.json", "utf8")
     );
 
     const provider_ethnet = hre.ethers.provider;

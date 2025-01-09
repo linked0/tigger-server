@@ -15,7 +15,7 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
-dotenv.config({ path: ".env" });
+dotenv.config({ path: "env/.env" });
 
 // If not defined, randomly generated.
 function createPrivateKey() {
@@ -98,7 +98,7 @@ const config: HardhatUserConfig = {
                 version: "0.5.0",
             },
             {
-                version: "0.8.20",
+                version: "0.8.0",
             },
         ],
     },
@@ -108,10 +108,15 @@ const config: HardhatUserConfig = {
             gas: 2100000,
             gasPrice: 8000000000,
         },
-        standalone: {
+        localnet: {
             url: process.env.URL_STANDALONE,
+            chainId: 7212309,
             accounts: getAccounts(),
-            chainId: 1281,
+        },
+        marigold: {
+            url: process.env.URL_STANDALONE,
+            chainId: 12301,
+            accounts: getAccounts(),
         },
         biznet_main_net: {
             url: process.env.BIZNET_MAIN_NET_URL || "",
@@ -121,6 +126,11 @@ const config: HardhatUserConfig = {
         biznet_test_net: {
             url: process.env.BIZNET_TEST_NET_URL || "",
             chainId: 2019,
+            accounts: getAccounts(),
+        },
+        biznet_dev_net: {
+            url: process.env.BIZNET_DEV_NET_URL || "",
+            chainId: 7212302,
             accounts: getAccounts(),
         },
         ethnet_main_net: {

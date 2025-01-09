@@ -17,6 +17,7 @@ import { HardhatUtils } from "../utils";
 import { BridgeContractManager } from "./BridgeContractManager";
 import { ContractUtils } from "./ContractUtils";
 import { GasPriceManager } from "./GasPriceManager";
+import { createProvider } from "hardhat/internal/core/providers/construction";
 
 import { BigNumber, providers, Wallet } from "ethers";
 import * as hre from "hardhat";
@@ -56,13 +57,21 @@ export class BOABridgeContractManager extends BridgeContractManager {
 
         try {
             this.manager_wallet = new Wallet(this.config.bridge.manager_key);
+            console.log("manager_wallet", this.manager_wallet);
 
             HardhatUtils.insertIntoProvider(this.config.bridge.ethnet_network, this.manager_wallet.privateKey);
             HardhatUtils.insertIntoProvider(this.config.bridge.biznet_network, this.manager_wallet.privateKey);
 
+            console.log(
+                "HardhatUtils.insertIntoProvider for 2",
+                this.config.bridge.biznet_network,
+                this.manager_wallet.privateKey
+            );
+
             const token_ethnet_Artifact = JSON.parse(
                 fs.readFileSync("./artifacts/contracts/boa-ethnet/PoohToken.sol/PoohToken.json", "utf8")
             );
+
             const bridgeTokenArtifact = JSON.parse(
                 fs.readFileSync("./artifacts/contracts/bridge/BOATokenBridge.sol/BOATokenBridge.json", "utf8")
             );
@@ -70,7 +79,15 @@ export class BOABridgeContractManager extends BridgeContractManager {
             const bridgeCoinArtifact = JSON.parse(
                 fs.readFileSync("./artifacts/contracts/bridge/BOACoinBridge.sol/BOACoinBridge.json", "utf8")
             );
+
+            console.log("this.config.bridge.ethnet_network", this.config.bridge.ethnet_network);
+
+            // console.log("All networks:", hre.config.networks);
+
             // region ETHNET
+            // const ethnet = createProvider(hre.config, this.config.bridge.ethnet_network);
+            // console.log("provider_ethnet", ethnet);
+
             hre.changeNetwork(this.config.bridge.ethnet_network);
             this.provider_ethnet = hre.ethers.provider as providers.Web3Provider;
             const manager_signer_ethnet = ContractUtils.getManagerSigner(
@@ -95,7 +112,7 @@ export class BOABridgeContractManager extends BridgeContractManager {
                 this.config.bridge.boa_ethnet_address,
                 token_ethnet_Artifact.abi,
                 this.provider_ethnet
-            ) as PoohToken;
+            ) as BOSAGORA;
 
             this.bridge_ethnet = new hre.ethers.Contract(
                 this.config.bridge.bridge_ethnet_address,
@@ -212,7 +229,7 @@ export class BOABridgeContractManager extends BridgeContractManager {
         direct: BridgeDirection,
         decimal: number
     ): Amount | null {
-        const GAS_UNIT = 10000000000;
+        const GAS_UNIT = 1000000000000000000;
         switch (direct) {
             case BridgeDirection.ETHNET_BIZNET:
                 return Amount.make(

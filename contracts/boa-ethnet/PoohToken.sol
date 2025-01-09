@@ -5,16 +5,16 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract PoohToken is ERC20, Ownable {
-    uint8 public constant DECIMALS = 7;
-    uint256 public constant INITIAL_SUPPLY = 5421301301958463;
-
-    constructor() ERC20("POOHTOKEN", "POO") Ownable () {
-        _mint(msg.sender, INITIAL_SUPPLY * (10 ** uint256(DECIMALS)));
+    
+    uint256 public MINTED_AMOUNT = 5 ether;
+    
+    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {
+        _mint(msg.sender, 123456789000000000000000000000000);
     }
-
-    // Function to mint tokens
-    // Only the owner of the contract (the one who deployed it) can call this function
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
+    
+    function mintTokens() public {
+        // Mints the defined amount of tokens for the caller
+        _mint(msg.sender, MINTED_AMOUNT);
     }
+    
 }

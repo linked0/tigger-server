@@ -38,7 +38,6 @@ export class Storage {
             connectionLimit: Number(databaseConfig.connectionLimit),
             queueLimit: Number(databaseConfig.queueLimit),
         };
-        console.log("@@@ Storage -> constructor -> dbconfig", dbconfig);
         this.pool = mysql.createPool(dbconfig);
 
         this.query(`CREATE DATABASE IF NOT EXISTS \`${databaseConfig.database}\`;`, [])
@@ -64,7 +63,6 @@ export class Storage {
      * @param databaseConfig Valid value is of type IDatabaseConfig,
      */
     public static waiteForConnection(databaseConfig: IDatabaseConfig): Promise<void> {
-        console.log("@@@ waiteForConnection -> databaseConfig", databaseConfig);
         const connection_config: mysql.ConnectionOptions = {
             host: databaseConfig.host,
             user: databaseConfig.user,

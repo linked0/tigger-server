@@ -29,14 +29,14 @@ async function main() {
 
     // region ETHNET
     const token_ethnet_Artifact = JSON.parse(
-        fs.readFileSync("./artifacts/contracts/boa-ethnet/PoohToken.sol/PoohToken.json", "utf8")
+        fs.readFileSync("./artifacts/contracts/boa-ethnet/BOSAGORA.sol/BOSAGORA.json", "utf8")
     );
     const provider_ethnet = hre.ethers.provider;
     const boa_ethnet = new hre.ethers.Contract(
         process.env.BOA_ETHNET_CONTRACT_ADDRESS || "",
         token_ethnet_Artifact.abi,
         provider_ethnet
-    ) as PoohToken;
+    ) as BOSAGORA;
 
     const adminSigner_ethnet = provider_ethnet.getSigner(admin.address);
     const adminGasPriceManager = new GasPriceManager(adminSigner_ethnet);

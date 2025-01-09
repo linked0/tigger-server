@@ -1,20 +1,56 @@
 # bizboa-bridge-server
 
-## Installation
+## Change setting
 
+#### 1. env/.env
+```
+BRIDGE_ETHNET_CONTRACT_ADDRESS
+BRIDGE_BIZNET_CONTRACT_ADDRESS
+BOA_ETHNET_CONTRACT_ADDRESS
+TOKEN_BRIDGE_ETHNET_CONTRACT_ADDRESS
+TOKEN_BRIDGE_BIZNET_CONTRACT_ADDRESS
 
-## Testing
+URL_STANDALONE
+CHAIN_ID_STANDALONE
+```
+
+If you use this, you should change this.
+```
+TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS1
+TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS1
+TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS2
+TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS2
+```
+
+#### 2. config/config.yaml
+- ethnet_network on bridge and token_bridge
+- biznet_network on bridge and token_bridge
+
+#### 3. hardhat.config.ts
+- Set network info if needed
+
+#### 4. Default provider
+Change hard-coded provider at `src/service/scheduler/GasPriceScheduler.ts`.
+```
+const provider = await ethers.getDefaultProvider("http://localhost:8585");
+```
+
+## Setup & Testing
 
 ```bash
-$ git clone https://github.com/bosagora/bizboa-bridge-server.git
-$ cd bizboa-bridge-server
 $ git submodule update --init
 $ ./copy_contracts.sh
 $ npm install
-$ cp .env.sample .env
+$ cp env/.env.sample env/.env
 $ npx hardhat compile
 $ npx hardhat test
 ```
+
+## Run
+```
+yarn start:dev
+```
+
 
 ## 테스트넷에서 BOA Bridge 테스트 하기
 See [BOA Bridge]

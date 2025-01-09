@@ -23,7 +23,7 @@ const URI = require("urijs");
 
 chai.use(solidity);
 
-describe("Test of Bridge Endpoints", function () {
+describe("Test of Bridge Server", function () {
     this.timeout(1000 * 60 * 5);
     const provider = waffle.provider;
     const user = new Wallet(process.env.USER_KEY || "");
@@ -39,7 +39,6 @@ describe("Test of Bridge Endpoints", function () {
         config.readFromFile(path.resolve(process.cwd(), "config/config_test.yaml"));
         await HardhatUtils.deployBOABridgeForTest(config);
         await HardhatUtils.deployTokenBridgeForTest(config);
-        console.log("config.server.port:", config.server.port);
         serverURL = new URL(`http://127.0.0.1:${config.server.port}`);
         swap_storage = await SwapStorage.make(config.database);
         swap_server = new TestSwapServer(config, swap_storage, [

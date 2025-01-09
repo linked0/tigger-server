@@ -13,6 +13,7 @@ import * as hre from "hardhat";
 import fs from "fs";
 import path from "path";
 import { Utils } from "../../modules/utils/Utils";
+import { BigNumber, providers, Wallet } from "ethers";
 
 // tslint:disable-next-line:no-var-requires
 const prompt = require("prompt");
@@ -41,10 +42,14 @@ export class KeyStore {
                 throw new Error("Not found key file");
             }
             try {
-                const data = JSON.parse(fs.readFileSync(path.resolve(Utils.getInitCWD(), this.key), "utf-8"));
+                // const data = JSON.parse(fs.readFileSync(path.resolve(Utils.getInitCWD(), this.key), "utf-8"));
+                const data = fs.readFileSync(path.resolve(Utils.getInitCWD(), this.key), "utf-8");
                 // @ts-ignore
-                const account = hre.web3.eth.accounts.decrypt(data, await this.ip());
-                this.key = account.privateKey;
+                console.log("decrypting");
+                const wallet = await Wallet.fromEncryptedJson(data, "pooh2024");
+                // const account = hre.web3.eth.accounts.decrypt(data, "pooh2024");
+                console.log("account in getPrivateKey", wallet);
+                this.key = wallet.privateKey;
                 this.isValid = true;
                 return this.key;
             } catch (err) {

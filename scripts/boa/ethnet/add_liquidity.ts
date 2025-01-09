@@ -7,7 +7,7 @@
 import { BOAToken } from "../../../src/service/common/Amount";
 import { GasPriceManager } from "../../../src/service/contract/GasPriceManager";
 
-import { BOATokenBridge, PoohToken } from "../../../typechain";
+import { BOATokenBridge, BOSAGORA } from "../../../typechain";
 
 import { Wallet } from "ethers";
 import { ethers } from "hardhat";
@@ -19,7 +19,7 @@ import { ContractUtils } from "../../../src/service/contract/ContractUtils";
 
 async function main() {
     const token_ethnet_Artifact = JSON.parse(
-        fs.readFileSync("./artifacts/contracts/boa-ethnet/PoohToken.sol/PoohToken.json", "utf8")
+        fs.readFileSync("./artifacts/contracts/boa-ethnet/BOSAGORA.sol/BOSAGORA.json", "utf8")
     );
     const bridgeArtifact = JSON.parse(
         fs.readFileSync("./artifacts/contracts/bridge/BOATokenBridge.sol/BOATokenBridge.json", "utf8")
@@ -31,7 +31,7 @@ async function main() {
         process.env.BOA_ETHNET_CONTRACT_ADDRESS || "",
         token_ethnet_Artifact.abi,
         provider_ethnet
-    ) as PoohToken;
+    ) as BOSAGORA;
 
     const bridge_ethnet = new ethers.Contract(
         process.env.BRIDGE_ETHNET_CONTRACT_ADDRESS || "",

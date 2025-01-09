@@ -95,7 +95,7 @@ export class CGCCoinPriceScheduler extends Scheduler {
                 }
             }
         } catch (error) {
-            logger.error("An exception occurred during execution - " + error);
+            logger.error("CGCCoinPrice: An exception occurred during execution - " + error);
         }
 
         this._old_time_stamp = this._new_time_stamp;

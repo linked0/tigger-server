@@ -3,6 +3,7 @@ import { Config } from "../common/Config";
 import { logger } from "../common/Logger";
 import { ContractUtils } from "../contract/ContractUtils";
 import { SwapStorage } from "../storage/SwapStorage";
+import { ethers } from "ethers";
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
@@ -81,24 +82,21 @@ export class GasPriceScheduler extends Scheduler {
             const old_period = Math.floor(this._old_time_stamp / this.interval);
             const new_period = Math.floor(this._new_time_stamp / this.interval);
             if (old_period !== new_period) {
-                const response = await this.client.get("https://ethgasstation.info/json/ethgasAPI.json");
-                try {
-                    if (response.data.fast && response.data.safeLow && response.data.average) {
-                        const price = {
-                            symbol: "GAS",
-                            fast: response.data.fast,
-                            low: response.data.safeLow,
-                            average: response.data.average,
-                            last_updated_at: ContractUtils.getTimeStamp(),
-                        };
-                        await this.storage.updateGasPrice(price);
-                    }
-                } catch (reason) {
-                    logger.error(`Failed to save the gas price: ${reason}`);
-                }
+                const provider = await ethers.getDefaultProvider("http://localhost:8585");
+                const gasPrice = await provider.getGasPrice();
+                const newFast = gasPrice.mul(110).div(100); // Increase fast by 10%
+                const newLow = gasPrice.mul(90).div(100); // Decrease low by 10%
+                const price = {
+                    symbol: "GAS",
+                    fast: newFast.toNumber(),
+                    low: newLow.toNumber(),
+                    average: gasPrice.toNumber(),
+                    last_updated_at: ContractUtils.getTimeStamp(),
+                };
+                await this.storage.updateGasPrice(price);
             }
         } catch (error) {
-            logger.error("An exception occurred during execution - " + error);
+            logger.error("GasPrice: An exception occurred during execution - " + error);
         }
 
         this._old_time_stamp = this._new_time_stamp;

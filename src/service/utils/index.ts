@@ -1,4 +1,4 @@
-import { BOACoinBridge, BOATokenBridge, PoohToken, ERC20, TokenBridge } from "../../../typechain";
+import { BOACoinBridge, BOATokenBridge, BOSAGORA, ERC20, TokenBridge } from "../../../typechain";
 import { Amount, BOACoin, BOAToken } from "../common/Amount";
 import { Config } from "../common/Config";
 import { ContractUtils } from "../contract/ContractUtils";
@@ -47,12 +47,12 @@ export class HardhatUtils {
 
             // region ETHNET
             hre.changeNetwork(config.bridge.ethnet_network);
-            const BOAEthTokenFactory = await hre.ethers.getContractFactory("PoohToken");
+            const BOAEthTokenFactory = await hre.ethers.getContractFactory("BOSAGORA");
             const BOATokenBridgeFactory = await hre.ethers.getContractFactory("BOATokenBridge");
             const provider_ethnet = hre.ethers.provider as providers.Web3Provider;
             const adminSigner_ethnet = provider_ethnet.getSigner(admin.address);
             const managerSigner_ethnet = provider_ethnet.getSigner(manager.address);
-            const boa_ethnet = (await BOAEthTokenFactory.connect(adminSigner_ethnet).deploy()) as PoohToken;
+            const boa_ethnet = (await BOAEthTokenFactory.connect(adminSigner_ethnet).deploy()) as BOSAGORA;
             await boa_ethnet.deployed();
             const bridge_ethnet = (await BOATokenBridgeFactory.connect(adminSigner_ethnet).deploy(
                 boa_ethnet.address,
