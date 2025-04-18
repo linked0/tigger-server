@@ -109,13 +109,18 @@ const config: HardhatUserConfig = {
             gasPrice: 8000000000,
         },
         localnet: {
-            url: process.env.URL_STANDALONE,
+            url: process.env.STANDALONE_URL,
             chainId: 7212309,
             accounts: getAccounts(),
         },
         marigold: {
-            url: process.env.URL_STANDALONE,
+            url: process.env.MARIGOLD_URL,
             chainId: 12301,
+            accounts: getAccounts(),
+        },
+        marigold_localnet: {
+            url: process.env.MARIGOLD_LOCALNET_URL,
+            chainId: 12309,
             accounts: getAccounts(),
         },
         biznet_main_net: {
