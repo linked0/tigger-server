@@ -82,7 +82,7 @@ this.query(`CREATE DATABASE IF NOT EXISTS \`${databaseConfig.database}\`;`, [])
 5. Check in MySQLWorkbench
 - Add connection to `devswap9` database and connect.
 
-## Setup & Testing
+## Setup & Test
 
 ```bash
 $ git submodule update --init
@@ -96,6 +96,12 @@ $ npx hardhat test
 ## Run
 ```
 yarn start:dev
+```
+
+다음의 로그가 나타나는 것은 정상
+```
+$ NODE_ENV=development node_modules/.bin/hardhat run src/main.ts
+환경 변수에 `FEE_MANAGER_ADDRESS` 이 존재하지 않아서 무작위로 생성합니다.
 ```
 
 ## 테스트넷에서 BOA Bridge 테스트 하기
