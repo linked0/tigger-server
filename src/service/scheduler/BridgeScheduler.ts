@@ -132,6 +132,7 @@ export class BridgeScheduler extends Scheduler {
 
                 switch (m.process_status) {
                     case BridgeProcessStatus.NONE:
+                        logger.debug(`NONE ${m.id}`);
                         // 사용자가 소스의 박스를 오픈했을 때 => 정상적으로 오픈되었는지 확인한다.
                         if (old_source_period !== new_source_period) {
                             await this.tasks[m.type].checkDepositIsOpened(m);
@@ -139,6 +140,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.CONFIRMED_OPENING_DEPOSIT:
+                        logger.debug(`CONFIRMED_OPENING_DEPOSIT ${m.id}`);
                         // 소스의 박스가 정상적으로 오픈 되었을 때 => 타켓의 박스를 오픈한다.
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].openWithdraw(m);
@@ -146,6 +148,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.FINISHED_OPENING_WITHDRAW:
+                        logger.debug(`FINISHED_OPENING_WITHDRAW ${m.id}`);
                         // 타켓의 박스가 오픈되었을 때 => 타켓의 박스가 정상적으로 오픈되었는지 확인한다.
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].checkWithdrawIsOpened(m);
@@ -153,6 +156,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.CONFIRMED_OPENING_WITHDRAW:
+                        logger.debug(`CONFIRMED_OPENING_WITHDRAW ${m.id}`);
                         // 타켓의 박스가 정상적으로 오픈되었을 때 => 사용자가 키를 전달해 줄 때 까지 기다린 후 키를 받아 타켓를 닫는다
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].closeWithdraw(m);
@@ -160,6 +164,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.FINISHED_CLOSING_WITHDRAW:
+                        logger.debug(`FINISHED_CLOSING_WITHDRAW ${m.id}`);
                         // 타켓의 박스가 정상적으로 오픈되었을 때 => 타켓의 박스가 닫힐 때 까지 기다린다.
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].checkWithdrawIsClosed(m);
@@ -167,6 +172,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.CONFIRMED_CLOSING_WITHDRAW:
+                        logger.debug(`CONFIRMED_CLOSING_WITHDRAW ${m.id}`);
                         // 타켓의 박스가 정상적으로 닫혔을 때 => 소스의 박스를 닫는다.
                         if (old_source_period !== new_source_period) {
                             await this.tasks[m.type].closeDeposit(m);
@@ -174,6 +180,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.FINISHED_CLOSING_DEPOSIT:
+                        //logger.debug(`FINISHED_CLOSING_DEPOSIT ${m.id}`);
                         // 소스의 박스를 닫았다면 => 그것이 정상적으로 닫혔는지 확인한다.
                         if (old_source_period !== new_source_period) {
                             await this.tasks[m.type].checkDepositIsClosed(m);
@@ -181,6 +188,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.STARTED_EXPIRE_WITHDRAW:
+                        logger.debug(`STARTED_EXPIRE_WITHDRAW ${m.id}`);
                         // 타켓의 박스의 만료프로세스가 진행되었다면 => 타켓 박스를 만료시킨다.
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].expireWithdraw(m);
@@ -188,6 +196,7 @@ export class BridgeScheduler extends Scheduler {
                         }
                         break;
                     case BridgeProcessStatus.FINISHED_EXPIRE_WITHDRAW:
+                        logger.debug(`FINISHED_EXPIRE_WITHDRAW ${m.id}`);
                         // 타켓 박스의 만료를 시켰다면 => 그것이 정상적으로 만료되었는지를 확인한다.
                         if (old_target_period !== new_target_period) {
                             await this.tasks[m.type].checkWithdrawIsExpired(m);

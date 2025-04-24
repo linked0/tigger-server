@@ -16,6 +16,9 @@ import path from "path";
 import { readYamlEnvSync } from "yaml-env-defaults";
 import { Utils } from "../../modules/utils/Utils";
 import { KeyStore } from "../keystore/KeyStore";
+import { ChainId, CONTRACT_ADDRESS_NETWORKS } from "tigger-swap-sdk";
+import hardhatConfig from "../../../hardhat.config";              // TS import
+import { HardhatUserConfig } from "hardhat/types";
 
 /**
  * Main config
@@ -480,6 +483,16 @@ export class BridgeConfig implements IBridgeConfig {
         if (config.fee !== undefined) this.fee = config.fee;
         if (config.manager_key !== undefined) this.manager_key = config.manager_key;
         if (config.fee_address !== undefined) this.fee_address = config.fee_address;
+
+
+        const netCfg = (hardhatConfig as HardhatUserConfig).networks;
+        const ethChainId = (netCfg?.[this.ethnet_network]?.chainId || 3133) as ChainId;
+        const bizChainId = (netCfg?.[this.biznet_network]?.chainId || 31337) as ChainId;
+        this.boa_ethnet_address = CONTRACT_ADDRESS_NETWORKS[ethChainId]?.WETH;
+        this.bridge_ethnet_address = CONTRACT_ADDRESS_NETWORKS[ethChainId]?.bridge;
+        this.bridge_biznet_address = CONTRACT_ADDRESS_NETWORKS[bizChainId]?.bridge;
+
+        console.log("config bridge", this);
     }
 }
 
@@ -602,9 +615,10 @@ export class TokenBridgeConfig implements ITokenBridgeConfig {
         if (config.biznet_interval !== undefined) this.biznet_interval = config.biznet_interval;
         if (config.ethnet_network !== undefined) this.ethnet_network = config.ethnet_network;
         if (config.biznet_network !== undefined) this.biznet_network = config.biznet_network;
-        if (config.token_addresses !== undefined && config.token_addresses !== null)
-            this.token_addresses = config.token_addresses;
-        else this.token_addresses = [];
+        // if (config.token_addresses !== undefined && config.token_addresses !== null)
+        //     this.token_addresses = config.token_addresses;
+        // else this.token_addresses = [];
+        this.token_addresses = [];
 
         if (config.gas_usage_open_deposit !== undefined) this.gas_usage_open_deposit = config.gas_usage_open_deposit;
         if (config.gas_usage_close_deposit !== undefined) this.gas_usage_close_deposit = config.gas_usage_close_deposit;
@@ -613,6 +627,18 @@ export class TokenBridgeConfig implements ITokenBridgeConfig {
             this.gas_usage_close_withdraw = config.gas_usage_close_withdraw;
 
         if (config.manager_key !== undefined) this.manager_key = config.manager_key;
+
+        console.log("old config token_bridge", this);
+
+        const netCfg = (hardhatConfig as HardhatUserConfig).networks;
+        const ethChainId = (netCfg?.[this.ethnet_network]?.chainId || 3133) as ChainId;
+        const bizChainId = (netCfg?.[this.biznet_network]?.chainId || 31337) as ChainId;
+        this.bridge_ethnet_address = CONTRACT_ADDRESS_NETWORKS[ethChainId]?.tokenBridge;
+        this.bridge_biznet_address = CONTRACT_ADDRESS_NETWORKS[bizChainId]?.tokenBridge;
+
+        this.token_addresses.push({ethnet: CONTRACT_ADDRESS_NETWORKS[ethChainId]?.token1, biznet: CONTRACT_ADDRESS_NETWORKS[bizChainId]?.token1});
+        this.token_addresses.push({ethnet: CONTRACT_ADDRESS_NETWORKS[ethChainId]?.token2, biznet: CONTRACT_ADDRESS_NETWORKS[bizChainId]?.token2});
+        console.log("new config token_bridge", this);
     }
 }
 

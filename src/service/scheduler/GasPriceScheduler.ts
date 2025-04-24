@@ -82,7 +82,7 @@ export class GasPriceScheduler extends Scheduler {
             const old_period = Math.floor(this._old_time_stamp / this.interval);
             const new_period = Math.floor(this._new_time_stamp / this.interval);
             if (old_period !== new_period) {
-                const provider = await ethers.getDefaultProvider("http://localhost:8585");
+                const provider = await ethers.getDefaultProvider("http://localhost:8885");
                 const gasPrice = await provider.getGasPrice();
                 const newFast = gasPrice.mul(110).div(100); // Increase fast by 10%
                 const newLow = gasPrice.mul(90).div(100); // Decrease low by 10%

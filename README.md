@@ -3,37 +3,84 @@
 ## Change setting
 
 #### 1. env/.env
-```
-BRIDGE_ETHNET_CONTRACT_ADDRESS
-BRIDGE_BIZNET_CONTRACT_ADDRESS
-BOA_ETHNET_CONTRACT_ADDRESS
-TOKEN_BRIDGE_ETHNET_CONTRACT_ADDRESS
-TOKEN_BRIDGE_BIZNET_CONTRACT_ADDRESS
+Change network information if needed
 
-URL_STANDALONE
-CHAIN_ID_STANDALONE
+```
+STANDALONE_URL=http://localhost:8585
+MARIGOLD_URL=http://localhost:8885
+MARIGOLD_LOCALNET_URL=http://localhost:8885
 ```
 
-If you use this, you should change this.
+#### 2. config.yaml
+Set loggin level and network
 ```
-TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS1
-TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS1
-TOKEN_BRIDGE_ETHNET_TOKEN_ADDRESS2
-TOKEN_BRIDGE_BIZNET_TOKEN_ADDRESS2
+level: debug
 ```
-
-#### 2. config/config.yaml
-- ethnet_network on bridge and token_bridge
-- biznet_network on bridge and token_bridge
+```
+bridge:
+  ethnet_network: "marigold_localnet"
+  biznet_network: "localnet"
+```
+```
+token_bridge:
+  ethnet_network: "marigold_localnet"
+  biznet_network: "localnet"
+```
 
 #### 3. hardhat.config.ts
 - Set network info if needed
 
-#### 4. Default provider
-Change hard-coded provider at `src/service/scheduler/GasPriceScheduler.ts`.
+#### 4. src/service/scheduler/GasPriceScheduler.ts
+Default provider (It should be on Ethereum testnet not Poonet)
 ```
-const provider = await ethers.getDefaultProvider("http://localhost:8585");
+const provider = await ethers.getDefaultProvider("http://localhost:8885");
 ```
+
+#### 5. Setup database
+1. If you didn't install the mysql server, please install.
+  - https://dev.mysql.com/downloads/mysql/
+
+2. Create config file
+  - sudo vi `/etc/my.cnf`
+  ```
+  [mysqld]
+  port=3306
+  bind-address=127.0.0.1
+
+  socket=/tmp/mysql.sock
+  ```
+  - Restart server
+  ```
+  sudo /usr/local/mysql/support-files/mysql.server restart
+  ```
+
+3. Create user and previleges
+```
+  CREATE USER 'devswap_user'@'localhost' IDENTIFIED BY 'mypassword';
+```
+
+4. Database Creation: Already exists in `src/modules/storage/Storage.ts`
+```
+this.query(`CREATE DATABASE IF NOT EXISTS \`${databaseConfig.database}\`;`, [])
+  .then(async (result) => {
+      dbconfig.database = databaseConfig.database;
+      this.pool = mysql.createPool(dbconfig);
+      this.createTables()
+          .then(() => {
+              if (callback != null) callback(null);
+          })
+          .catch((err: any) => {
+              if (callback != null) callback(err);
+          });
+  })
+  .catch((err) => {
+      if (callback != null) callback(err);
+  });
+```
+- 만약 데이터베이스 생성을 따로 진행하고 싶으면 `script/init-db.ts` 참조. 완성된 코드는 아니고, 참고용.
+
+5. Check in MySQLWorkbench
+- Add connection to `devswap9` database and connect.
 
 ## Setup & Testing
 
@@ -50,7 +97,6 @@ $ npx hardhat test
 ```
 yarn start:dev
 ```
-
 
 ## 테스트넷에서 BOA Bridge 테스트 하기
 See [BOA Bridge]

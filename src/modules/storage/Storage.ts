@@ -71,6 +71,8 @@ export class Storage {
             port: Number(databaseConfig.port),
         };
 
+        console.log("connection_config", connection_config);
+
         return new Promise<void>((resolve) => {
             let try_count = 0;
             const check_connection = async () => {

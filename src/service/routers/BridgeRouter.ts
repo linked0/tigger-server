@@ -614,6 +614,7 @@ export class BridgeRouter {
         const gas_price = await this._swap_storage.getStandardGasPrice();
         const eth_boa_rate = await this._swap_storage.getEthBoaRate();
         if (gas_price === null) {
+            logger.error("Failed to get gas price");
             return res.json(
                 BridgeRouter.makeResponseData(500, undefined, {
                     message: "Failed to read data.",
@@ -622,6 +623,7 @@ export class BridgeRouter {
         }
 
         if (eth_boa_rate === null) {
+            logger.error("Failed to get ETH & BOA price");
             return res.json(
                 BridgeRouter.makeResponseData(500, undefined, {
                     message: "Failed to read data.",
@@ -648,6 +650,10 @@ export class BridgeRouter {
             );
         }
 
+        logger.debug(
+            `gas_price=${gas_price}, eth_boa_rate=${eth_boa_rate}, calculated_tx_fee=${calculated_tx_fee}`
+        );
+
         if (calculated_tx_fee !== null) {
             return res.json(
                 BridgeRouter.makeResponseData(200, {
@@ -656,6 +662,7 @@ export class BridgeRouter {
                 })
             );
         } else {
+            logger.error("Failed to get tx fee");
             return res.json(
                 BridgeRouter.makeResponseData(500, undefined, {
                     message: "Failed to read data.",
